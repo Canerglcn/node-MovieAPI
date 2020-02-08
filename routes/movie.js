@@ -5,7 +5,7 @@ const router = express.Router();
 const Movie= require('../models/Movie');
 
 router.get('/', (req,res)=>{
-   const promise=Movie.find({ });
+   const promise= Movie.find({ });
 
    promise.then((data)=> {
     res.json(data);
@@ -14,14 +14,17 @@ router.get('/', (req,res)=>{
    });
 });
 
-router.get('/:movie_id', (req,res)=>{
-    const promise=Movie.findById(req.params.movie_id);
+router.get('/:movie_id', (req,res,next)=>{
+   const promise=Movie.findById(req.params.movie_id);
 
-    promise.then((movie)=>{
-        res.json(movie);
-    }).catch((err)=>{
-        res.json(err);
-    });
+   promise.then((movie)=>{
+       if(!movie)
+           next({ message:'The movie is not found',code:1 });
+       res.json(movie);
+   }).catch((err)=>{
+       res.json(err);
+   });
+
 });
 
 
